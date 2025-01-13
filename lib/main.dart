@@ -1,6 +1,11 @@
+import 'package:aplikasi_kasir/services/supabase.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async {
+  WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeSupabase();
+
   runApp(const MainApp());
 }
 
