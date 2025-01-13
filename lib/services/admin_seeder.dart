@@ -4,27 +4,27 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 Future seedDataOnce() async {
   final supabase = Supabase.instance.client;
 
-  final response = supabase
-      .from('users')
-      .select('email')
-      .eq('email', 'administrator@gmail.com');
+  try {
+    final response = await supabase
+        .from('users')
+        .select()
+        .eq('email', 'administrator@gmail.com')
+        .maybeSingle();
 
-  final hashedPassword = BCrypt.hashpw('admin123', BCrypt.gensalt());
-
-  if (response == null) {
-    try {
+    if (response == null) {
+      final hashedPassword = BCrypt.hashpw('admin123', BCrypt.gensalt());
       await supabase.from('users').insert({
         'email': 'administrator@gmail.com',
         'username': 'Administrator',
         'password': hashedPassword,
         'role': 'admin',
       });
-    } catch (e) {
+    } else {
       // ignore: avoid_print
-      print("Error $e");
+      print('User dengan email administrator@gmail.com sudah ada.');
     }
-  } else {
+  } catch (e) {
     // ignore: avoid_print
-    print('User dengan email administrator@gmail.com sudah ada.');
+    print("Error $e");
   }
 }
