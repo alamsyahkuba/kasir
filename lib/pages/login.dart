@@ -33,7 +33,7 @@ class _AuthPageState extends State<LoginPage> {
       _isLoading = false;
     });
 
-    if (isSuccess == true) {
+    if (isSuccess) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
