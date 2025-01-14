@@ -33,10 +33,14 @@ class _AuthPageState extends State<LoginPage> {
       _isLoading = false;
     });
 
-    if (isSuccess) {
+    if (isSuccess == true) {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => HomePage()),
+      );
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Email atau Password yang anda masukkan salah!")),
       );
     }
   }
@@ -59,7 +63,8 @@ class _AuthPageState extends State<LoginPage> {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Padding(
-                padding: EdgeInsets.symmetric(vertical: 0, horizontal: (screenWidth / 8)),
+                padding: EdgeInsets.symmetric(
+                    vertical: 0, horizontal: (screenWidth / 8)),
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
