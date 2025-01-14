@@ -36,17 +36,17 @@ class _CreateProductState extends State<CreateProduct> {
       'stock': stock,
     });
 
-    if (response == true) {
+    if (response != null) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Kesalahan: $response")),
+      );
+    } else {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(content: Text("Produk berhasil ditambahkan")),
       );
       _namaProdukController.clear();
       _hargaProdukController.clear();
       _stokProdukController.clear();
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Error: $response")),
-      );
     }
     Navigator.pop(context, true);
     Navigator.pushReplacement(
