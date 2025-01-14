@@ -25,7 +25,7 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> fetchProducts() async {
-    final response = await supabase.from('products').select();
+    final response = await supabase.from('products').select().order('created_at', ascending: false);
 
     setState(() {
       products = List<Map<String, dynamic>>.from(response);
