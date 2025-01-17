@@ -1,5 +1,6 @@
 import 'package:aplikasi_kasir/components/bottombar.dart';
-import 'package:aplikasi_kasir/pages/create_product.dart';
+import 'package:aplikasi_kasir/components/product/edit_product.dart';
+import 'package:aplikasi_kasir/components/product/create_product.dart';
 import 'package:aplikasi_kasir/components/appbar.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
@@ -25,7 +26,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   Future<void> fetchProducts() async {
-    final response = await supabase.from('products').select().order('created_at', ascending: false);
+    final response = await supabase
+        .from('products')
+        .select()
+        .order('created_at', ascending: false);
 
     setState(() {
       products = List<Map<String, dynamic>>.from(response);
@@ -144,10 +148,11 @@ class _HomePageState extends State<HomePage> {
                         ),
                       ),
                       onPressed: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => CreateProduct()),
+                        showDialog(
+                          context: context,
+                          builder: (context) => CreateProduct(
+                            onProductAdded: fetchProducts,
+                          ),
                         );
                       },
                     ),
@@ -169,9 +174,44 @@ class _HomePageState extends State<HomePage> {
                 final product = filteredProducts[index];
 
                 return GridTile(
+                  footer: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    crossAxisAlignment: CrossAxisAlignment.center,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(right: 4, bottom: 10),
+                        child: IconButton(
+                          tooltip: "Edit Produk",
+                          icon: Icon(Icons.edit),
+                          onPressed: () {
+                            final updatedData =
+                                showDialog<Map<String, dynamic>>(
+                              context: context,
+                              builder: (context) {
+                                return UpdateProductDialog(product: product);
+                              },
+                            );
+                          },
+                        ),
+                      ),
+                      Padding(
+                        padding: EdgeInsets.only(right: 16, bottom: 10),
+                        child: IconButton(
+                          tooltip: "Hapus Produk",
+                          icon: Icon(Icons.delete),
+                          color: Color.fromARGB(255, 240, 75, 75),
+                          onPressed: () {},
+                        ),
+                      ),
+                    ],
+                  ),
                   child: Card(
                     margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
                     color: Color(0xfff7f7f7),
+                    shape: RoundedRectangleBorder(
+                      side: BorderSide(color: Color(0xff9e9e9e), width: 1),
+                      borderRadius: BorderRadius.circular(10),
+                    ),
                     child: Padding(
                       padding: EdgeInsets.all(16),
                       child: Column(
