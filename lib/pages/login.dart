@@ -1,6 +1,7 @@
+import 'package:aplikasi_kasir/components/bottombar.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-import 'package:aplikasi_kasir/pages/home.dart';
+// import 'package:aplikasi_kasir/pages/home.dart';
 import 'package:aplikasi_kasir/services/auth.dart';
 
 final supabase = Supabase.instance.client;
@@ -10,16 +11,21 @@ class LoginPage extends StatefulWidget {
 
   @override
   // ignore: library_private_types_in_public_api
-  _AuthPageState createState() => _AuthPageState();
+  State<LoginPage> createState() => _LoginPageState();
 }
 
-class _AuthPageState extends State<LoginPage> {
+class _LoginPageState extends State<LoginPage> {
+  final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   bool _isObscure = true;
   bool _isLoading = false;
 
   Future _handleLogin() async {
+    if (!_formKey.currentState!.validate()) {
+      return;
+    }
+
     setState(() {
       _isLoading = true;
     });
@@ -29,18 +35,30 @@ class _AuthPageState extends State<LoginPage> {
 
     final isSuccess = await auth(email, password);
 
-    setState(() {
-      _isLoading = false;
-    });
+    if (isSuccess == "success") {
+      setState(() {
+        _isLoading = false;
+      });
 
-    if (isSuccess) {
       Navigator.pushReplacement(
         context,
-        MaterialPageRoute(builder: (context) => HomePage()),
+        MaterialPageRoute(builder: (context) => BottomNavBar()),
       );
-    } else {
+    } else if (isSuccess == "email_not_found") {
+      setState(() {
+        _isLoading = false;
+      });
+
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Email atau Password yang anda masukkan salah!")),
+        SnackBar(content: Text("Email yang anda masukkan salah!")),
+      );
+    } else if (isSuccess == "wrong_password") {
+      setState(() {
+        _isLoading = false;
+      });
+
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text("Password yang anda masukkan salah!")),
       );
     }
   }
@@ -99,103 +117,16 @@ class _AuthPageState extends State<LoginPage> {
                           ),
                         ),
                       ),
-                      TextFormField(
-                        controller: _emailController,
-                        obscureText: false,
-                        textAlign: TextAlign.start,
-                        maxLines: 1,
-                        style: TextStyle(
-                          fontWeight: FontWeight.w400,
-                          fontStyle: FontStyle.normal,
-                          fontSize: 16,
-                          color: Color(0xff000000),
-                        ),
-                        decoration: InputDecoration(
-                          disabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide:
-                                BorderSide(color: Color(0xff9e9e9e), width: 1),
-                          ),
-                          focusedBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide:
-                                BorderSide(color: Color(0xff9e9e9e), width: 1),
-                          ),
-                          enabledBorder: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(4.0),
-                            borderSide:
-                                BorderSide(color: Color(0xff9e9e9e), width: 1),
-                          ),
-                          labelText: "Email",
-                          labelStyle: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 16,
-                            color: Color(0xff7c7878),
-                          ),
-                          filled: true,
-                          fillColor: Color(0x00ffffff),
-                          isDense: false,
-                          contentPadding:
-                              EdgeInsets.symmetric(vertical: 8, horizontal: 12),
-                        ),
-                      ),
-                      Padding(
-                        padding:
-                            EdgeInsets.symmetric(vertical: 16, horizontal: 0),
-                        child: TextFormField(
-                          controller: _passwordController,
-                          obscureText: _isObscure,
-                          textAlign: TextAlign.start,
-                          maxLines: 1,
-                          style: TextStyle(
-                            fontWeight: FontWeight.w400,
-                            fontStyle: FontStyle.normal,
-                            fontSize: 16,
-                            color: Color(0xff000000),
-                          ),
-                          decoration: InputDecoration(
-                            disabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(4.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xff9e9e9e), width: 1),
-                            ),
-                            focusedBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(4.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xff9e9e9e), width: 1),
-                            ),
-                            enabledBorder: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(4.0),
-                              borderSide: BorderSide(
-                                  color: Color(0xff9e9e9e), width: 1),
-                            ),
-                            labelText: "Password",
-                            labelStyle: TextStyle(
-                              fontWeight: FontWeight.w400,
-                              fontStyle: FontStyle.normal,
-                              fontSize: 16,
-                              color: Color(0xff7c7878),
-                            ),
-                            filled: true,
-                            fillColor: Color(0x00ffffff),
-                            isDense: false,
-                            contentPadding: EdgeInsets.symmetric(
-                                vertical: 8, horizontal: 12),
-                            suffixIcon: IconButton(
-                              icon: Icon(
-                                _isObscure
-                                    ? Icons.visibility
-                                    : Icons.visibility_off,
-                              ),
-                              color: Color(0xff7b7c82),
-                              onPressed: () {
-                                setState(() {
-                                  _isObscure = !_isObscure;
-                                });
-                              },
-                            ),
-                          ),
+                      Form(
+                        key: _formKey,
+                        child: Column(
+                          children: [
+                            _buildTextField(_emailController, "Email"),
+                            SizedBox(height: 10),
+                            _buildTextField(_passwordController, "Password",
+                                isPassword: true),
+                            SizedBox(height: 10),
+                          ],
                         ),
                       ),
                       Padding(
@@ -231,6 +162,29 @@ class _AuthPageState extends State<LoginPage> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildTextField(TextEditingController controller, String label,
+      {bool isPassword = false}) {
+    return TextFormField(
+      controller: controller,
+      obscureText: isPassword ? _isObscure : false,
+      decoration: InputDecoration(
+          labelText: label,
+          border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
+          suffixIcon: isPassword
+              ? IconButton(
+                  onPressed: () {
+                    setState(() {
+                      _isObscure = !_isObscure;
+                    });
+                  },
+                  icon: Icon(
+                      _isObscure ? Icons.visibility : Icons.visibility_off),
+                )
+              : null),
+      validator: (value) => value!.isEmpty ? "$label tidak boleh kosong" : null,
     );
   }
 }

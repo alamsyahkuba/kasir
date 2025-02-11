@@ -1,25 +1,35 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class CreateProduct extends StatefulWidget {
-  final VoidCallback onProductAdded;
+class UpdateProductDialog extends StatefulWidget {
+  final Map<String, dynamic> product;
+  final VoidCallback onProductUpdated;
 
-  const CreateProduct({super.key, required this.onProductAdded});
+  const UpdateProductDialog(
+      {super.key, required this.product, required this.onProductUpdated});
 
   @override
-  // ignore: library_private_types_in_public_api
-  _CreateProductState createState() => _CreateProductState();
+  State<UpdateProductDialog> createState() => _UpdateProductDialogState();
 }
 
-class _CreateProductState extends State<CreateProduct> {
+class _UpdateProductDialogState extends State<UpdateProductDialog> {
   final supabase = Supabase.instance.client;
   final _formKey = GlobalKey<FormState>();
-  final nameProductController = TextEditingController();
-  final priceProductController = TextEditingController();
-  final stockProductController = TextEditingController();
+  late TextEditingController nameProductController;
+  late TextEditingController priceProductController;
+  late TextEditingController stockProductController;
 
-  Future _insertProduct() async {
+  @override
+  void initState() {
+    super.initState();
+    nameProductController = TextEditingController(text: widget.product['name']);
+    priceProductController =
+        TextEditingController(text: widget.product['price'].toString());
+    stockProductController =
+        TextEditingController(text: widget.product['stock'].toString());
+  }
+
+  Future _updateProduct() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -28,11 +38,16 @@ class _CreateProductState extends State<CreateProduct> {
     final price = double.tryParse(priceProductController.text);
     final stock = int.tryParse(stockProductController.text);
 
-    final response = await supabase.from('products').insert({
-      'name': name,
-      'price': price,
-      'stock': stock,
-    });
+    final response = await supabase
+        .from('products')
+        .update({
+          'name': name,
+          'price': price,
+          'stock': stock,
+        })
+        .eq('id', widget.product['id'])
+        .select()
+        .maybeSingle();
 
     if (response != null) {
       ScaffoldMessenger.of(context).showSnackBar(
@@ -40,13 +55,13 @@ class _CreateProductState extends State<CreateProduct> {
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Produk berhasil ditambahkan")),
+        SnackBar(content: Text("Produk berhasil diperbarui")),
       );
       nameProductController.clear();
       priceProductController.clear();
       stockProductController.clear();
 
-      widget.onProductAdded();
+      widget.onProductUpdated();
       Navigator.pop(context, true);
     }
   }
@@ -56,7 +71,7 @@ class _CreateProductState extends State<CreateProduct> {
     return Form(
       key: _formKey,
       child: AlertDialog(
-        title: Text("Tambah Produk"),
+        title: Text("Edit Produk"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
@@ -70,17 +85,12 @@ class _CreateProductState extends State<CreateProduct> {
         ),
         actions: [
           TextButton(
-            child: Text("Batal"),
             onPressed: () => Navigator.of(context).pop(),
+            child: Text("Batal"),
           ),
           TextButton(
-            child: Text("Tambah"),
-            onPressed: () async {
-              final isSuccess = await _insertProduct();
-              if (isSuccess) {
-                Navigator.of(context).pop(true);
-              }
-            },
+            onPressed: _updateProduct,
+            child: Text("Simpan"),
           ),
         ],
       ),

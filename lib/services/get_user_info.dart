@@ -3,16 +3,17 @@ import 'package:supabase_flutter/supabase_flutter.dart';
 
 final supabase = Supabase.instance.client;
 
-Future getUsername() async {
+Future getUserInfo() async {
   final prefs = await SharedPreferences.getInstance();
   final userId = prefs.getString('user_id');
 
   final response = await supabase
       .from('users')
-      .select('username')
+      .select('username, role')
       .eq('id', userId as Object)
       .maybeSingle();
 
-  final username = response?['username'] as String?;
-  return username;
+  final user = response?['username'] as String?;
+  final role = response?['role'] as String?;
+  return {'username': user, 'role': role};
 }

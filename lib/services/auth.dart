@@ -14,6 +14,9 @@ Future auth(String email, String password) async {
         .eq('email', email)
         .maybeSingle();
 
+    if (response == null) {
+      return "email_not_found";
+    }
     final hashedPassword = response!['password'];
     final userId = response['id'].toString();
 
@@ -21,9 +24,9 @@ Future auth(String email, String password) async {
       final prefs = await SharedPreferences.getInstance();
       await prefs.setString('user_id', userId);
 
-      return true;
+      return "success";
     } else {
-      return false;
+      return "wrong_password";
     }
   } catch (e) {
     // ignore: avoid_print
@@ -33,7 +36,9 @@ Future auth(String email, String password) async {
 }
 
 Future logOut(BuildContext context) async {
-  await supabase.auth.signOut();
+  final prefs = await SharedPreferences.getInstance();
+  await prefs.clear();
+
   Navigator.pushReplacement(
     context,
     MaterialPageRoute(builder: (context) => LoginPage()),

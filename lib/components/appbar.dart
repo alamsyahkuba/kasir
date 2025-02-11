@@ -1,4 +1,4 @@
-import 'package:aplikasi_kasir/services/get_username.dart';
+import 'package:aplikasi_kasir/services/get_user_info.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
@@ -24,23 +24,27 @@ AppBar buildAppBar({String title = ''}) {
     ),
     actions: [
       FutureBuilder(
-        future: getUsername(),
+        future: getUserInfo(),
         builder: (context, snapshot) {
-          if (snapshot.data == null) {
+          final userInfo = snapshot.data;
+          final username = userInfo?['username'] ?? "Tamu";
+
+          if (snapshot.connectionState == ConnectionState.waiting) {
             return Padding(
               padding: EdgeInsets.only(right: 16),
               child: Center(
-                child: Text(
-                  "Guest",
-                  style: TextStyle(
+                child: SizedBox(
+                  width: 16,
+                  height: 16,
+                  child: CircularProgressIndicator(
                     color: Colors.white,
-                    fontSize: 16,
+                    strokeWidth: 2,
                   ),
                 ),
               ),
             );
           }
-          final username = snapshot.data;
+
           return Padding(
             padding: EdgeInsets.only(right: 16),
             child: Center(
