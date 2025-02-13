@@ -1,50 +1,50 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class CreateProductDialog extends StatefulWidget {
-  final VoidCallback onProductAdded;
+class CreateCustomerDialog extends StatefulWidget {
+  final VoidCallback onCustomerAdded;
 
-  const CreateProductDialog({super.key, required this.onProductAdded});
+  const CreateCustomerDialog({super.key, required this.onCustomerAdded});
 
   @override
-  State<CreateProductDialog> createState() => _CreateProductDialogState();
+  State<CreateCustomerDialog> createState() => _CreateCustomerDialogState();
 }
 
-class _CreateProductDialogState extends State<CreateProductDialog> {
+class _CreateCustomerDialogState extends State<CreateCustomerDialog> {
   final supabase = Supabase.instance.client;
   final _formKey = GlobalKey<FormState>();
-  final nameProductController = TextEditingController();
-  final priceProductController = TextEditingController();
-  final stockProductController = TextEditingController();
+  final nameCustomerController = TextEditingController();
+  final addressCustomerController = TextEditingController();
+  final phoneCustomerController = TextEditingController();
 
-  Future _insertProduct() async {
+  Future _insertCustomer() async {
     if (!_formKey.currentState!.validate()) {
       return;
     }
 
-    final name = nameProductController.text;
-    final price = double.tryParse(priceProductController.text);
-    final stock = int.tryParse(stockProductController.text);
+    final name = nameCustomerController.text;
+    final address = addressCustomerController.text;
+    final phone = phoneCustomerController.text;
 
-    final response = await supabase.from('products').insert({
+    final response = await supabase.from('customers').insert({
       'name': name,
-      'price': price,
-      'stock': stock,
+      'address': address,
+      'phone_num': phone,
     });
 
     if (response != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Gagal menambahkan produk")),
+        SnackBar(content: Text("Gagal menambahkan pelanggan")),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Produk berhasil ditambahkan")),
+        SnackBar(content: Text("Pelanggan berhasil ditambahkan")),
       );
-      nameProductController.clear();
-      priceProductController.clear();
-      stockProductController.clear();
+      nameCustomerController.clear();
+      addressCustomerController.clear();
+      phoneCustomerController.clear();
 
-      widget.onProductAdded();
+      widget.onCustomerAdded();
       Navigator.pop(context, true);
     }
   }
@@ -54,16 +54,15 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
     return Form(
       key: _formKey,
       child: AlertDialog(
-        title: Text("Tambah Produk"),
+        title: Text("Tambah Pelanggan"),
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildTextField(nameProductController, "Nama Produk"),
+            _buildTextField(nameCustomerController, "Nama Pelanggan"),
             SizedBox(height: 10),
-            _buildTextField(priceProductController, "Harga Produk (Rp)",
-                isNumber: true),
+            _buildTextField(addressCustomerController, "Alamat"),
             SizedBox(height: 10),
-            _buildTextField(stockProductController, "Stok Produk",
+            _buildTextField(phoneCustomerController, "No. Telp",
                 isNumber: true),
             SizedBox(height: 10),
           ],
@@ -74,7 +73,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
             onPressed: () => Navigator.of(context).pop(),
           ),
           TextButton(
-            onPressed: _insertProduct,
+            onPressed: _insertCustomer,
             child: Text("Tambah"),
           ),
         ],

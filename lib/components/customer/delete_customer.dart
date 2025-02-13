@@ -1,35 +1,35 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
-class DeleteProductDialog extends StatefulWidget {
-  final Map<String, dynamic> product;
-  final VoidCallback onProductDeleted;
+class DeleteCustomerDialog extends StatefulWidget {
+  final Map<String, dynamic> customer;
+  final VoidCallback onCustomerDeleted;
 
-  const DeleteProductDialog(
-      {super.key, required this.product, required this.onProductDeleted});
+  const DeleteCustomerDialog(
+      {super.key, required this.customer, required this.onCustomerDeleted});
 
   @override
-  State<DeleteProductDialog> createState() => _DeleteProductDialogState();
+  State<DeleteCustomerDialog> createState() => _DeleteCustomerDialogState();
 }
 
-class _DeleteProductDialogState extends State<DeleteProductDialog> {
+class _DeleteCustomerDialogState extends State<DeleteCustomerDialog> {
   final supabase = Supabase.instance.client;
 
-  Future _deleteProduct() async {
+  Future _deleteCustomer() async {
     final response = await supabase
-        .from('products')
+        .from('customers')
         .delete()
-        .match({'id': widget.product['id']});
+        .match({'id': widget.customer['id']});
 
     if (response != null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Gagal menghapus produk")),
+        SnackBar(content: Text("Gagal menghapus pelanggan")),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Produk berhasil dihapus")),
+        SnackBar(content: Text("Pelanggan berhasil dihapus")),
       );
-      widget.onProductDeleted();
+      widget.onCustomerDeleted();
       Navigator.pop(context, true);
     }
   }
@@ -37,11 +37,12 @@ class _DeleteProductDialogState extends State<DeleteProductDialog> {
   @override
   Widget build(BuildContext context) {
     return AlertDialog(
-      title: Text("Hapus Produk"),
+      title: Text("Hapus Pelanggan"),
       content: Column(
         mainAxisSize: MainAxisSize.min,
         children: [
-          Text("Anda yakin ingin menghapus produk ${widget.product['name']}?")
+          Text(
+              "Anda yakin ingin menghapus pelanggan ${widget.customer['name']}?")
         ],
       ),
       actions: [
@@ -50,7 +51,7 @@ class _DeleteProductDialogState extends State<DeleteProductDialog> {
           onPressed: () => Navigator.of(context).pop(),
         ),
         TextButton(
-          onPressed: _deleteProduct,
+          onPressed: _deleteCustomer,
           style: TextButton.styleFrom(foregroundColor: Colors.red),
           child: Text("Hapus"),
         ),

@@ -1,9 +1,9 @@
-import 'package:aplikasi_kasir/pages/customers.dart';
-import 'package:aplikasi_kasir/pages/history.dart';
+import 'package:aplikasi_kasir/pages/admin/customers.dart';
+import 'package:aplikasi_kasir/pages/employee/history.dart';
 import 'package:aplikasi_kasir/pages/home.dart';
 import 'package:aplikasi_kasir/pages/profile.dart';
-import 'package:aplikasi_kasir/pages/transactions.dart';
-import 'package:aplikasi_kasir/pages/users.dart';
+import 'package:aplikasi_kasir/pages/employee/transactions.dart';
+import 'package:aplikasi_kasir/pages/admin/users.dart';
 import 'package:flutter/material.dart';
 import 'package:aplikasi_kasir/services/get_user_info.dart';
 
@@ -31,11 +31,11 @@ class _BottomNavBarState extends State<BottomNavBar> {
             );
           }
 
-          final List<Widget> pages = role == 'admin'
+          final List<Widget> pages = role == 'Admin'
               ? [HomePage(), CustomersPage(), UsersPage(), ProfilePage()]
               : [HomePage(), TransactionsPage(), HistoryPage(), ProfilePage()];
 
-          final List<BottomNavigationBarItem> icons = role == 'admin'
+          final List<BottomNavigationBarItem> icons = role == 'Admin'
               ? [
                   BottomNavigationBarItem(
                       icon: Icon(Icons.home), label: 'Home'),

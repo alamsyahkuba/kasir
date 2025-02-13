@@ -49,9 +49,9 @@ class _UpdateProductDialogState extends State<UpdateProductDialog> {
         .select()
         .maybeSingle();
 
-    if (response != null) {
+    if (response == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text("Kesalahan $response")),
+        SnackBar(content: Text("Gagal memperbarui produk")),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(

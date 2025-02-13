@@ -35,7 +35,7 @@ Future auth(String email, String password) async {
   }
 }
 
-Future logOut(BuildContext context) async {
+Future<void> logOut(BuildContext context) async {
   final prefs = await SharedPreferences.getInstance();
   await prefs.clear();
 

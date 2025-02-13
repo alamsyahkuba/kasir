@@ -9,11 +9,12 @@ Future getUserInfo() async {
 
   final response = await supabase
       .from('users')
-      .select('username, role')
+      .select('username, role, email')
       .eq('id', userId as Object)
       .maybeSingle();
 
   final user = response?['username'] as String?;
+  final email = response?['email'] as String?;
   final role = response?['role'] as String?;
-  return {'username': user, 'role': role};
+  return {'username': user, 'email': email, 'role': role};
 }
