@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class CreateCustomerDialog extends StatefulWidget {
@@ -51,11 +52,11 @@ class _CreateCustomerDialogState extends State<CreateCustomerDialog> {
 
   @override
   Widget build(BuildContext context) {
-    return Form(
-      key: _formKey,
-      child: AlertDialog(
-        title: Text("Tambah Pelanggan"),
-        content: Column(
+    return AlertDialog(
+      title: Text("Tambah Pelanggan"),
+      content: Form(
+        key: _formKey,
+        child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             _buildTextField(nameCustomerController, "Nama Pelanggan"),
@@ -67,17 +68,17 @@ class _CreateCustomerDialogState extends State<CreateCustomerDialog> {
             SizedBox(height: 10),
           ],
         ),
-        actions: [
-          TextButton(
-            child: Text("Batal"),
-            onPressed: () => Navigator.of(context).pop(),
-          ),
-          TextButton(
-            onPressed: _insertCustomer,
-            child: Text("Tambah"),
-          ),
-        ],
       ),
+      actions: [
+        TextButton(
+          child: Text("Batal"),
+          onPressed: () => Navigator.of(context).pop(),
+        ),
+        TextButton(
+          onPressed: _insertCustomer,
+          child: Text("Tambah"),
+        ),
+      ],
     );
   }
 }
@@ -87,10 +88,13 @@ Widget _buildTextField(TextEditingController controller, String label,
   return TextFormField(
     controller: controller,
     keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+    inputFormatters: isNumber ? [FilteringTextInputFormatter.digitsOnly] : [],
     decoration: InputDecoration(
       labelText: label,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
     ),
-    validator: (value) => value!.isEmpty ? "$label tidak boleh kosong" : null,
+    validator: (value) => value == null || value.trim().isEmpty
+        ? "$label tidak boleh kosong"
+        : null,
   );
 }

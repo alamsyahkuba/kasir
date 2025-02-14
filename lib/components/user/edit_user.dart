@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
+import 'package:aplikasi_kasir/components/user/change_password.dart';
 
 class UpdateUserDialog extends StatefulWidget {
   final Map<String, dynamic> user;
@@ -87,6 +88,16 @@ class _UpdateUserDialogState extends State<UpdateUserDialog> {
               },
               validator: (value) => value == null ? "Role harus dipilih" : null,
             ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                showDialog(
+                  context: context,
+                  builder: (context) => ChangePasswordDialog(user: widget.user),
+                );
+              },
+              child: Text("Ubah Password"),
+            ),
             SizedBox(height: 10),
           ],
         ),
@@ -112,6 +123,8 @@ Widget _buildTextField(TextEditingController controller, String label) {
       labelText: label,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
     ),
-    validator: (value) => value!.isEmpty ? "$label tidak boleh kosong" : null,
+    validator: (value) => value == null || value.trim().isEmpty
+        ? "$label tidak boleh kosong"
+        : null,
   );
 }

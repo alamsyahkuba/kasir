@@ -119,6 +119,6 @@ Widget _buildTextField(TextEditingController controller, String label) {
       labelText: label,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
     ),
-    validator: (value) => value!.isEmpty ? "$label tidak boleh kosong" : null,
+    validator: (value) => value == null || value.trim().isEmpty ? "$label tidak boleh kosong" : null,
   );
 }

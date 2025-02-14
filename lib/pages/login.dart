@@ -1,7 +1,6 @@
 import 'package:aplikasi_kasir/components/bottombar.dart';
 import 'package:flutter/material.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
-// import 'package:aplikasi_kasir/pages/home.dart';
 import 'package:aplikasi_kasir/services/auth.dart';
 
 final supabase = Supabase.instance.client;
@@ -70,7 +69,7 @@ class _LoginPageState extends State<LoginPage> {
       body: Center(
         child: Padding(
           padding: EdgeInsets.symmetric(
-            horizontal: (screenWidth / 10),
+            horizontal: (screenWidth / 12),
             vertical: 0,
           ),
           child: SingleChildScrollView(
@@ -81,7 +80,7 @@ class _LoginPageState extends State<LoginPage> {
               ),
               child: Padding(
                 padding: EdgeInsets.symmetric(
-                    vertical: 0, horizontal: (screenWidth / 8)),
+                    vertical: 0, horizontal: (screenWidth / 12)),
                 child: SingleChildScrollView(
                   child: Column(
                     mainAxisAlignment: MainAxisAlignment.start,
@@ -89,7 +88,7 @@ class _LoginPageState extends State<LoginPage> {
                     mainAxisSize: MainAxisSize.min,
                     children: [
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0, 50, 0, 0),
+                        padding: EdgeInsets.fromLTRB(0, 20, 0, 0),
                         child: Text(
                           "Selamat Datang",
                           textAlign: TextAlign.center,
@@ -129,7 +128,7 @@ class _LoginPageState extends State<LoginPage> {
                         ),
                       ),
                       Padding(
-                        padding: EdgeInsets.fromLTRB(0, 30, 0, 50),
+                        padding: EdgeInsets.fromLTRB(0, 20, 0, 50),
                         child: _isLoading
                             ? CircularProgressIndicator()
                             : MaterialButton(
@@ -183,7 +182,7 @@ class _LoginPageState extends State<LoginPage> {
                       _isObscure ? Icons.visibility : Icons.visibility_off),
                 )
               : null),
-      validator: (value) => value!.isEmpty ? "$label tidak boleh kosong" : null,
+      validator: (value) => value == null || value.trim().isEmpty ? "$label tidak boleh kosong" : null,
     );
   }
 }

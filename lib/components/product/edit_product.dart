@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:supabase_flutter/supabase_flutter.dart';
 
 class UpdateProductDialog extends StatefulWidget {
@@ -103,10 +104,11 @@ Widget _buildTextField(TextEditingController controller, String label,
   return TextFormField(
     controller: controller,
     keyboardType: isNumber ? TextInputType.number : TextInputType.text,
+    inputFormatters: isNumber ? [FilteringTextInputFormatter.digitsOnly] : [],
     decoration: InputDecoration(
       labelText: label,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
     ),
-    validator: (value) => value!.isEmpty ? "$label tidak boleh kosong" : null,
+    validator: (value) => value == null || value.trim().isEmpty ? "$label tidak boleh kosong" : null,
   );
 }
