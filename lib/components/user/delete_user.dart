@@ -40,13 +40,20 @@ class _DeleteUserDialogState extends State<DeleteUserDialog> {
       content: Text(
           "Anda yakin ingin menghapus pengguna ${widget.user['username']}?"),
       actions: [
-        TextButton(
-          child: Text("Batal"),
+        ElevatedButton(
           onPressed: () => Navigator.of(context).pop(),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey,
+            foregroundColor: Colors.black,
+          ),
+          child: Text("Batal"),
         ),
-        TextButton(
+        ElevatedButton(
           onPressed: _deleteUser,
-          style: TextButton.styleFrom(foregroundColor: Colors.red),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.red,
+            foregroundColor: Colors.white,
+          ),
           child: Text("Hapus"),
         ),
       ],

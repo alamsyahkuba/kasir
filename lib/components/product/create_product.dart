@@ -17,8 +17,13 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
   final nameProductController = TextEditingController();
   final priceProductController = TextEditingController();
   final stockProductController = TextEditingController();
+  String? _nameError;
 
   Future _insertProduct() async {
+    setState(() {
+      _nameError = null;
+    });
+
     if (!_formKey.currentState!.validate()) {
       return;
     }
@@ -26,6 +31,16 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
     final name = nameProductController.text;
     final price = double.tryParse(priceProductController.text);
     final stock = int.tryParse(stockProductController.text);
+
+    final existing =
+        await supabase.from('products').select().eq('name', name).maybeSingle();
+
+    if (existing != null) {
+      setState(() {
+        _nameError = "Produk nama sudah ada!";
+      });
+      return;
+    }
 
     final response = await supabase.from('products').insert({
       'name': name,
@@ -59,7 +74,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
         content: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            _buildTextField(nameProductController, "Nama Produk"),
+            _buildTextField(nameProductController, "Nama Produk", errorText: _nameError),
             SizedBox(height: 10),
             _buildTextField(priceProductController, "Harga Produk (Rp)",
                 isNumber: true),
@@ -70,12 +85,20 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
           ],
         ),
         actions: [
-          TextButton(
-            child: Text("Batal"),
+          ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.grey,
+              foregroundColor: Colors.black,
+            ),
+            child: Text("Batal"),
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: _insertProduct,
+            style: ElevatedButton.styleFrom(
+              backgroundColor: Colors.green,
+              foregroundColor: Colors.white,
+            ),
             child: Text("Tambah"),
           ),
         ],
@@ -85,15 +108,18 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
 }
 
 Widget _buildTextField(TextEditingController controller, String label,
-    {bool isNumber = false}) {
+    {bool isNumber = false, String? errorText}) {
   return TextFormField(
     controller: controller,
     keyboardType: isNumber ? TextInputType.number : TextInputType.text,
     inputFormatters: isNumber ? [FilteringTextInputFormatter.digitsOnly] : [],
     decoration: InputDecoration(
       labelText: label,
+      errorText: errorText,
       border: OutlineInputBorder(borderRadius: BorderRadius.circular(10)),
     ),
-    validator: (value) => value == null || value.trim().isEmpty ? "$label tidak boleh kosong" : null,
+    validator: (value) => value == null || value.trim().isEmpty
+        ? "$label tidak boleh kosong"
+        : null,
   );
 }

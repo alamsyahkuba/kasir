@@ -70,12 +70,20 @@ class _CreateCustomerDialogState extends State<CreateCustomerDialog> {
         ),
       ),
       actions: [
-        TextButton(
-          child: Text("Batal"),
+        ElevatedButton(
           onPressed: () => Navigator.of(context).pop(),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey,
+            foregroundColor: Colors.black,
+          ),
+          child: Text("Batal"),
         ),
-        TextButton(
+        ElevatedButton(
           onPressed: _insertCustomer,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+          ),
           child: Text("Tambah"),
         ),
       ],

@@ -80,8 +80,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
   void _updateQuantity(int index, int change) {
     setState(() {
       cart[index]['quantity'] =
-          (cart[index]['quantity'] + change).clamp(1, 100);
+          (cart[index]['quantity'] + change).clamp(0, 100);
     });
+    if (cart[index]['quantity'] == 0) {
+      _removeProduct(index);
+    }
   }
 
   void _removeProduct(int index) {
@@ -198,9 +201,13 @@ class _TransactionsPageState extends State<TransactionsPage> {
             ),
           ),
           actions: [
-            TextButton(
-              child: Text("OK"),
+            ElevatedButton(
               onPressed: () => Navigator.pop(context),
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.blue,
+                foregroundColor: Colors.white,
+              ),
+              child: Text("OK"),
             ),
           ],
         );
@@ -221,22 +228,24 @@ class _TransactionsPageState extends State<TransactionsPage> {
     return Scaffold(
       appBar: buildAppBar(title: "Transaksi"),
       body: Padding(
-        padding: const EdgeInsets.all(12),
+        padding: const EdgeInsets.all(10),
         child: Form(
           key: _formKey,
           // autovalidateMode: AutovalidateMode.,
           child: Column(
             children: [
               Row(
+                spacing: 2,
                 children: [
                   Expanded(
                     child: DropdownButtonFormField(
                       value: selectedCustomer,
                       decoration: InputDecoration(
+                        isDense: true,
                         labelText: "Pilih Pelanggan",
                         border: OutlineInputBorder(),
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                            EdgeInsets.only(top: 8, bottom: 8, left: 8),
                       ),
                       validator: (value) =>
                           value == null ? 'Mohon pilih pelanggan' : null,
@@ -246,20 +255,25 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       items: customers.map((customer) {
                         return DropdownMenuItem(
                           value: customer['id'].toString(),
-                          child: Text(customer['name']),
+                          child: Text(
+                            customer['name'],
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
                         );
                       }).toList(),
                     ),
                   ),
-                  SizedBox(width: 10),
+                  // SizedBox(width: 6),
                   Expanded(
                     child: DropdownButtonFormField(
                       value: selectedProduct,
                       decoration: InputDecoration(
+                        isDense: true,
                         labelText: "Pilih Produk",
                         border: OutlineInputBorder(),
                         contentPadding:
-                            EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+                            EdgeInsets.only(top: 8, bottom: 8, left: 8),
                       ),
                       validator: (value) =>
                           value == null ? 'Mohon pilih produk' : null,
@@ -269,7 +283,11 @@ class _TransactionsPageState extends State<TransactionsPage> {
                       items: products.map((product) {
                         return DropdownMenuItem(
                           value: product['id'].toString(),
-                          child: Text(product['name']),
+                          child: Text(
+                            product['name'],
+                            overflow: TextOverflow.ellipsis,
+                            maxLines: 1,
+                          ),
                         );
                       }).toList(),
                     ),
@@ -279,6 +297,10 @@ class _TransactionsPageState extends State<TransactionsPage> {
               SizedBox(height: 8),
               ElevatedButton(
                 onPressed: _addProductToCart,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: Colors.green,
+                  foregroundColor: Colors.white,
+                ),
                 child: Text("Tambah Produk"),
               ),
               SizedBox(height: 8),
@@ -309,10 +331,6 @@ class _TransactionsPageState extends State<TransactionsPage> {
                             IconButton(
                               icon: Icon(Icons.add, color: Colors.green),
                               onPressed: () => _updateQuantity(index, 1),
-                            ),
-                            IconButton(
-                              icon: Icon(Icons.delete, color: Colors.grey),
-                              onPressed: () => _removeProduct(index),
                             ),
                           ],
                         ),
@@ -369,6 +387,7 @@ class _TransactionsPageState extends State<TransactionsPage> {
                 onPressed: _processTransaction,
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.blue,
+                  foregroundColor: Colors.white,
                   padding: EdgeInsets.symmetric(vertical: 12),
                   minimumSize: Size(double.infinity, 45),
                 ),

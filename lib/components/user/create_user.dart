@@ -98,12 +98,20 @@ class _CreateUserDialogState extends State<CreateUserDialog> {
           ],
         ),
         actions: [
-          TextButton(
-            child: Text("Batal"),
+          ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
+            style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey,
+            foregroundColor: Colors.black,
           ),
-          TextButton(
+            child: Text("Batal"),
+          ),
+          ElevatedButton(
             onPressed: _insertUser,
+            style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+          ),
             child: Text("Tambah"),
           ),
         ],

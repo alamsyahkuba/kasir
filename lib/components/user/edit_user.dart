@@ -88,7 +88,7 @@ class _UpdateUserDialogState extends State<UpdateUserDialog> {
               },
               validator: (value) => value == null ? "Role harus dipilih" : null,
             ),
-            TextButton(
+            ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);
                 showDialog(
@@ -96,18 +96,30 @@ class _UpdateUserDialogState extends State<UpdateUserDialog> {
                   builder: (context) => ChangePasswordDialog(user: widget.user),
                 );
               },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: Colors.yellow,
+                foregroundColor: Colors.black,
+              ),
               child: Text("Ubah Password"),
             ),
             SizedBox(height: 10),
           ],
         ),
         actions: [
-          TextButton(
+          ElevatedButton(
             onPressed: () => Navigator.of(context).pop(),
+            style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey,
+            foregroundColor: Colors.black,
+          ),
             child: Text("Batal"),
           ),
-          TextButton(
+          ElevatedButton(
             onPressed: _updateUser,
+            style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+          ),
             child: Text("Simpan"),
           ),
         ],

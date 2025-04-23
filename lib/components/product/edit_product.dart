@@ -87,10 +87,18 @@ class _UpdateProductDialogState extends State<UpdateProductDialog> {
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
+            style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey,
+            foregroundColor: Colors.black,
+          ),
             child: Text("Batal"),
           ),
           TextButton(
             onPressed: _updateProduct,
+            style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+          ),
             child: Text("Simpan"),
           ),
         ],

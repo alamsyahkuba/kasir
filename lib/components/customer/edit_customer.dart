@@ -88,12 +88,20 @@ class _UpdateCustomerDialogState extends State<UpdateCustomerDialog> {
         ),
       ),
       actions: [
-        TextButton(
+        ElevatedButton(
           onPressed: () => Navigator.of(context).pop(),
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.grey,
+            foregroundColor: Colors.black,
+          ),
           child: Text("Batal"),
         ),
-        TextButton(
+        ElevatedButton(
           onPressed: _updateCustomer,
+          style: ElevatedButton.styleFrom(
+            backgroundColor: Colors.green,
+            foregroundColor: Colors.white,
+          ),
           child: Text("Simpan"),
         ),
       ],
