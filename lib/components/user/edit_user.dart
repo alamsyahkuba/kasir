@@ -88,6 +88,7 @@ class _UpdateUserDialogState extends State<UpdateUserDialog> {
               },
               validator: (value) => value == null ? "Role harus dipilih" : null,
             ),
+            SizedBox(height: 10),
             ElevatedButton(
               onPressed: () {
                 Navigator.pop(context);

@@ -37,7 +37,7 @@ class _CreateProductDialogState extends State<CreateProductDialog> {
 
     if (existing != null) {
       setState(() {
-        _nameError = "Produk nama sudah ada!";
+        _nameError = "Produk sudah ada!";
       });
       return;
     }
